@@ -13,5 +13,5 @@ A simple Python-based habit tracker to track daily habits and analyze performanc
 - JSON (for storage)
 
 ## How to Run
-
+```bash
 python main.py

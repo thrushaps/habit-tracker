@@ -1,0 +1,17 @@
+[
+    {
+        "date": "2026-09-05",
+        "habit": "coding",
+        "status": "done"
+    },
+    {
+        "date": "2026-09-05",
+        "habit": "exercise",
+        "status": "missed"
+    },
+    {
+        "date": "2026-09-05",
+        "habit": "learning",
+        "status": "done"
+    }
+]

@@ -29,67 +29,69 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* ===== MAIN BACKGROUND ===== */
+/* Main background */
 .stApp {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
 }
 
-/* ===== REMOVE WHITE BLOCKS ===== */
+/* Center content */
 .block-container {
-    background: transparent !important;
     padding-top: 2rem;
+    max-width: 800px;
 }
 
-section[data-testid="stSidebar"] {
-    background: rgba(0,0,0,0.3);
+/* Headings */
+h1, h2, h3 {
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* ===== GLASS EFFECT CARD ===== */
-.css-1r6slb0, .css-12oz5g7 {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(10px);
+/* Cards (glass effect) */
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
     border-radius: 15px;
-    padding: 20px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
 }
 
-/* ===== INPUT FIELDS ===== */
-.stTextInput input, 
-.stSelectbox div {
-    background-color: rgba(255,255,255,0.1) !important;
-    color: white !important;
-    border-radius: 10px !important;
-    border: 1px solid rgba(255,255,255,0.2);
+.card:hover {
+    transform: scale(1.02);
 }
 
-/* ===== BUTTON ===== */
+/* Buttons */
 .stButton button {
-    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    background: #ff4b4b;
     color: white;
     border-radius: 10px;
     border: none;
-    font-weight: bold;
+    padding: 8px 16px;
 }
 
-/* ===== TEXT VISIBILITY FIX ===== */
-h1, h2, h3, p, label {
-    color: white !important;
+.stButton button:hover {
+    background: #ff2e2e;
 }
 
-/* ===== REMOVE DEFAULT WHITE BACKGROUND ===== */
-[data-testid="stAppViewContainer"] {
-    background: transparent;
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background: rgba(0,0,0,0.3);
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # ================= APP TITLE =================
-st.title("🌿 Habit Tracker Dashboard")
+st.markdown("<h1>🌿 Habit Tracker Dashboard</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Track your habits. Improve your life ✨</p>", unsafe_allow_html=True)
 st.write("Track your habits. Improve your life ✨")
 
 # ================= MENU =================
-menu = st.sidebar.selectbox("Menu", ["Add Habit", "View Habits", "Analysis"])
+menu = st.sidebar.radio(
+    "✨ Menu",
+    ["Add Habit", "View Habits", "Analysis"]
+)
 
 data = load_data()
 
@@ -118,8 +120,15 @@ elif menu == "View Habits":
     if data:
         for habit in data:
             name = habit.get("name") or habit.get("habit") or "Unknown"
-            status = habit.get("status", "Unknown")
-            st.write(f"👉 {name} - {status}")
+            status = habit.get("status") or "Unknown"
+
+            emoji = "✅" if status == "done" else "❌"
+
+            st.markdown(f"""
+            <div class="card">
+                {emoji} <b>{name}</b> — {status}
+            </div>
+            """, unsafe_allow_html=True)
     else:
         st.info("No habits yet")
 

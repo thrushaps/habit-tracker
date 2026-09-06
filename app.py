@@ -1,81 +1,156 @@
 import streamlit as st
-import pandas as pd
 import json
-from datetime import date
+import os
+from collections import Counter
 
+# ================= FILE =================
 FILE = "data.json"
 
+# ================= LOAD DATA =================
 def load_data():
-    try:
+    if os.path.exists(FILE):
         with open(FILE, "r") as f:
             return json.load(f)
-    except:
-        return []
+    return []
 
+# ================= SAVE DATA =================
 def save_data(data):
     with open(FILE, "w") as f:
         json.dump(data, f, indent=4)
 
-st.title("📊 Habit Tracker dashboard")
+# ================= PAGE CONFIG =================
+st.set_page_config(
+    page_title="Habit Tracker",
+    page_icon="🌿",
+    layout="centered"
+)
 
-menu = st.sidebar.selectbox("Menu", ["Add Habit", "View Habits", "Analyze"])
+# ================= CUSTOM CSS =================
+st.markdown("""
+<style>
+
+/* ===== MAIN BACKGROUND ===== */
+.stApp {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+}
+
+/* ===== REMOVE WHITE BLOCKS ===== */
+.block-container {
+    background: transparent !important;
+    padding-top: 2rem;
+}
+
+section[data-testid="stSidebar"] {
+    background: rgba(0,0,0,0.3);
+}
+
+/* ===== GLASS EFFECT CARD ===== */
+.css-1r6slb0, .css-12oz5g7 {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+/* ===== INPUT FIELDS ===== */
+.stTextInput input, 
+.stSelectbox div {
+    background-color: rgba(255,255,255,0.1) !important;
+    color: white !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* ===== BUTTON ===== */
+.stButton button {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    color: white;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+}
+
+/* ===== TEXT VISIBILITY FIX ===== */
+h1, h2, h3, p, label {
+    color: white !important;
+}
+
+/* ===== REMOVE DEFAULT WHITE BACKGROUND ===== */
+[data-testid="stAppViewContainer"] {
+    background: transparent;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ================= APP TITLE =================
+st.title("🌿 Habit Tracker Dashboard")
+st.write("Track your habits. Improve your life ✨")
+
+# ================= MENU =================
+menu = st.sidebar.selectbox("Menu", ["Add Habit", "View Habits", "Analysis"])
 
 data = load_data()
 
-# ➤ Add Habit
+# ================= ADD HABIT =================
 if menu == "Add Habit":
-    st.subheader("Add New Habit")
+    st.subheader("➕ Add New Habit")
 
-    habit = st.text_input("Habit Name")
+    name = st.text_input("Habit Name")
     status = st.selectbox("Status", ["done", "missed"])
 
     if st.button("Save"):
-        entry = {
-            "date": str(date.today()),
-            "habit": habit,
+        if name:
+            data.append({
+            "name": name,
             "status": status
-        }
-        data.append(entry)
-        save_data(data)
-        st.success("Habit Saved ✅")
-
-# ➤ View Habits
-elif menu == "View Habits":
-    st.subheader("Your Habits")
-
-    if not data:
-        st.warning("No habits yet")
-    else:
-        for d in data:
-            st.write(f"{d['date']} - {d['habit']} - {d['status']}")
-
-# ➤ Analyze
-elif menu == "Analyze":
-    st.subheader("Habit Analysis")
-
-    done = {}
-    missed = {}
-
-    for d in data:
-        if d["status"] == "done":
-            done[d["habit"]] = done.get(d["habit"], 0) + 1
+            })
+            save_data(data)
+            st.success("Habit saved ✅")
         else:
-            missed[d["habit"]] = missed.get(d["habit"], 0) + 1
+            st.warning("Enter habit name!")
 
-    st.subheader("✅ Completed Habits")
-    st.json(done)
+# ================= VIEW HABITS =================
+elif menu == "View Habits":
+    st.subheader("📋 Your Habits")
 
-    st.subheader("❌ Missed Habits")
-    st.json(missed)
+    if data:
+        for habit in data:
+            name = habit.get("name") or habit.get("habit") or "Unknown"
+            status = habit.get("status", "Unknown")
+            st.write(f"👉 {name} - {status}")
+    else:
+        st.info("No habits yet")
 
-    if missed:
-        weakest = max(missed, key=missed.get)
-        st.error(f"Weakest Habit: {weakest}")
-    if done:
+# ================= ANALYSIS =================
+elif menu == "Analysis":
+    st.subheader("📊 Habit Analysis")
 
-        df = pd.DataFrame({
-            "Habit": list(done.keys()),
-            "Completed": list(done.values()),
-            "Missed": [missed.get(h, 0) for h in done.keys()]})
+    if data:
+        completed = [
+        h.get("name") or h.get("habit") or "Unknown"
+        for h in data
+        if h.get("status") == "done"
+        ]
+        missed = [
+        h.get("name") or h.get("habit") or "Unknown"
+        for h in data
+        if h.get("status") == "missed"
+        ]
+
+        completed_count = Counter(completed)
+        missed_count = Counter(missed)
+
+        st.success("✅ Completed Habits")
+        st.json(completed_count)
+
+        st.error("❌ Missed Habits")
+        st.json(missed_count)
+
         st.subheader("📊 Habit Chart")
-        st.bar_chart(df.set_index("Habit"))
+        all_counts = Counter([h.get("name") or h.get("habit") or "Unknown" for h in data])
+        st.bar_chart(all_counts)
+
+    else:
+        st.info("No data to analyze")

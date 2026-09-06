@@ -38,5 +38,17 @@
         "date": "2026-09-05",
         "habit": "playing",
         "status": "missed"
+    },
+    {
+        "name": "studying",
+        "status": "done"
+    },
+    {
+        "name": "dancing",
+        "status": "done"
+    },
+    {
+        "name": "learning",
+        "status": "done"
     }
 ]

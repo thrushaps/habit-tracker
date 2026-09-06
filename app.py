@@ -2,6 +2,8 @@ import streamlit as st
 import json
 import os
 from collections import Counter
+import pandas as pd
+
 
 # ================= FILE =================
 FILE = "data.json"
@@ -85,7 +87,6 @@ section[data-testid="stSidebar"] {
 # ================= APP TITLE =================
 st.markdown("<h1>🌿 Habit Tracker Dashboard</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center;'>Track your habits. Improve your life ✨</p>", unsafe_allow_html=True)
-st.write("Track your habits. Improve your life ✨")
 
 # ================= MENU =================
 menu = st.sidebar.radio(
@@ -99,19 +100,20 @@ data = load_data()
 if menu == "Add Habit":
     st.subheader("➕ Add New Habit")
 
-    name = st.text_input("Habit Name")
+    habit_name = st.text_input("Enter habit name")
     status = st.selectbox("Status", ["done", "missed"])
 
-    if st.button("Save"):
-        if name:
+    if st.button("Add Habit"):
+        if habit_name:
             data.append({
-            "name": name,
-            "status": status
+                "name": habit_name,
+                "status": status
             })
-            save_data(data)
-            st.success("Habit saved ✅")
+            save_data(data)   
+            st.success("Habit added!")
+            st.balloons()
         else:
-            st.warning("Enter habit name!")
+            st.warning("Please enter a habit name")
 
 # ================= VIEW HABITS =================
 elif menu == "View Habits":
@@ -152,14 +154,15 @@ elif menu == "Analysis":
         missed_count = Counter(missed)
 
         st.success("✅ Completed Habits")
-        st.write(completed_count)
+        st.json(completed_count)
 
         st.error("❌ Missed Habits")
-        st.write(missed_count)
+        st.json(missed_count)
 
         st.subheader("📊 Habit Chart")
         all_counts = Counter([h.get("name") or h.get("habit") or "Unknown" for h in data])
-        st.bar_chart(all_counts)
+        df = pd.DataFrame.from_dict(all_counts, orient="index", columns=["Count"])
+        st.bar_chart(df)
 
     else:
         st.info("No data to analyze")

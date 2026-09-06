@@ -152,10 +152,10 @@ elif menu == "Analysis":
         missed_count = Counter(missed)
 
         st.success("✅ Completed Habits")
-        st.json(completed_count)
+        st.write(completed_count)
 
         st.error("❌ Missed Habits")
-        st.json(missed_count)
+        st.write(missed_count)
 
         st.subheader("📊 Habit Chart")
         all_counts = Counter([h.get("name") or h.get("habit") or "Unknown" for h in data])

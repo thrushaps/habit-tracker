@@ -50,5 +50,9 @@
     {
         "name": "learning",
         "status": "done"
+    },
+    {
+        "name": "playing",
+        "status": "done"
     }
 ]

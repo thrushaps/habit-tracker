@@ -120,17 +120,42 @@ elif menu == "View Habits":
     st.subheader("📋 Your Habits")
 
     if data:
-        for habit in data:
+        for i, habit in enumerate(data):
             name = habit.get("name") or habit.get("habit") or "Unknown"
             status = habit.get("status") or "Unknown"
 
             emoji = "✅" if status == "done" else "❌"
 
+            col1, col2 = st.columns([4,1])
+
+        with col1:
             st.markdown(f"""
             <div class="card">
                 {emoji} <b>{name}</b> — {status}
             </div>
             """, unsafe_allow_html=True)
+
+        with col2:
+            if st.button("❌", key=f"del_{i}"):
+                st.session_state[f"confirm_{i}"] = True
+
+    # 👇 Confirmation UI
+        if st.session_state.get(f"confirm_{i}", False):
+            st.warning(f"Delete '{name}'?")
+
+            col_yes, col_no = st.columns(2)
+
+            with col_yes:
+                if st.button("Yes", key=f"yes_{i}"):
+                    data.pop(i)
+                    save_data(data)
+                    st.success("Deleted!")
+                    st.session_state[f"confirm_{i}"] = False
+                    st.rerun()
+
+            with col_no:
+                if st.button("No", key=f"no_{i}"):
+                    st.session_state[f"confirm_{i}"] = False
     else:
         st.info("No habits yet")
 

@@ -143,7 +143,7 @@ elif menu == "View Habits":
 
                 with col_yes:
                     if st.button("Yes", key=f"yes_{i}"):
-                        data.pop(i)
+                        data = [h for idx, h in enumerate(data) if idx != i]
                         save_data(data)
                         st.success("Deleted!")
                         st.session_state[f"confirm_{i}"] = False

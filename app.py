@@ -4,25 +4,62 @@ import os
 from collections import Counter
 import pandas as pd
 
+USER_FILE = "users.json"
 
+# create file if not exists
+if not os.path.exists(USER_FILE):
+    with open(USER_FILE, "w") as f:
+        json.dump({}, f)
+
+#LOGIN
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
+if "username" not in st.session_state:
+    st.session_state.username = ""
+
 if not st.session_state.logged_in:
-    st.title("🔐 Login Page")
+    st.title("🔐 Login / Signup")
+
+    choice = st.radio("Choose", ["Login", "Signup"])
 
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
-    if st.button("Login"):
-        if username == "thrusha" and password == "thrusha":
-            st.session_state.logged_in = True
-            st.rerun()
-        else:
-            st.error("Invalid username or password")
+    with open(USER_FILE, "r") as f:
+        users = json.load(f)
+
+    if choice == "Signup":
+        if st.button("Create Account"):
+            if username in users:
+                st.error("User already exists")
+            else:
+                users[username] = password
+                with open(USER_FILE, "w") as f:
+                    json.dump(users, f)
+                st.success("Account created! Now login")
+
+    if choice == "Login":
+        if st.button("Login"):
+            if username in users and users[username] == password:
+                st.session_state.logged_in = True
+                st.session_state.username = username
+                st.rerun()
+            else:
+                st.error("Invalid username or password")
 
     st.stop()
 
+# MAIN APP (after login)
+st.title("🌱 Habit Tracker")
+
+# 👉 ADD THIS LINE HERE
+st.write(f"Welcome {st.session_state.username}")
+
+habit = st.text_input("Enter Habit")
+
+if st.button("Add Habit"):
+    st.success(f"Habit '{habit}' added!")
 
 # ================= FILE =================
 FILE = "data.json"

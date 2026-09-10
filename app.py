@@ -44,20 +44,36 @@ if not st.session_state.logged_in:
 
     if choice == "Signup":
         if st.button("Create Account"):
-            if username in users:
+
+        # ❗ STEP 1: Check empty fields
+            if username.strip() == "" or password.strip() == "":
+                st.error("Username and Password cannot be empty")
+
+        # ❗ STEP 2: Check existing user
+            elif username in users:
                 st.error("User already exists")
+
+        # ❗ STEP 3: Create account
             else:
                 users[username] = password
                 with open(USER_FILE, "w") as f:
                     json.dump(users, f)
+
                 st.success("Account created! Now login")
 
     if choice == "Login":
         if st.button("Login"):
-            if username in users and users[username] == password:
+
+        # ❗ Check empty
+            if username.strip() == "" or password.strip() == "":
+                st.error("Enter username and password")
+
+        # ❗ Validate
+            elif username in users and users[username] == password:
                 st.session_state.logged_in = True
                 st.session_state.username = username
                 st.rerun()
+
             else:
                 st.error("Invalid username or password")
 

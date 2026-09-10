@@ -164,8 +164,12 @@ elif menu == "Analysis":
         st.error("Missed")
         st.write(Counter(missed))
 
-        df = pd.DataFrame(Counter([h["name"] for h in user_data]).items(), columns=["Habit", "Count"])
-        st.bar_chart(df.set_index("Habit"))
-
-    else:
-        st.info("No data yet")
+        # ✅ FIXED GRAPH (ONLY DONE HABITS)
+        if completed:
+            df = pd.DataFrame(
+                Counter(completed).items(),
+                columns=["Habit", "Count"]
+            )
+            st.bar_chart(df.set_index("Habit"))
+        else:
+            st.info("No completed habits to show")

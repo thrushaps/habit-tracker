@@ -1,58 +1,8 @@
-[
-    {
-        "date": "2026-09-05",
-        "habit": "coding",
-        "status": "done"
-    },
-    {
-        "date": "2026-09-05",
-        "habit": "exercise",
-        "status": "missed"
-    },
-    {
-        "date": "2026-09-05",
-        "habit": "learning",
-        "status": "done"
-    },
-    {
-        "date": "2026-09-05",
-        "habit": "dancing",
-        "status": "done"
-    },
-    {
-        "date": "2026-09-05",
-        "habit": "coding",
-        "status": "done"
-    },
-    {
-        "date": "2026-09-05",
-        "habit": "coding",
-        "status": "done"
-    },
-    {
-        "date": "2026-09-05",
-        "habit": "studying",
-        "status": "done"
-    },
-    {
-        "date": "2026-09-05",
-        "habit": "playing",
-        "status": "missed"
-    },
-    {
-        "name": "studying",
-        "status": "done"
-    },
-    {
-        "name": "dancing",
-        "status": "done"
-    },
-    {
-        "name": "learning",
-        "status": "done"
-    },
-    {
-        "name": "playing",
-        "status": "done"
-    }
-]
+{
+    "THRUSHA": [
+        {
+            "name": "playing",
+            "status": "done"
+        }
+    ]
+}

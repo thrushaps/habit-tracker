@@ -19,5 +19,11 @@
             "name": "CODING",
             "status": "missed"
         }
+    ],
+    "koo": [
+        {
+            "name": "gym",
+            "status": "done"
+        }
     ]
 }

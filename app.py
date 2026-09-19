@@ -112,6 +112,14 @@ menu = st.sidebar.radio(
     "✨ Menu",
     ["Add Habit", "View Habits", "Analysis"]
 )
+# 👤 show username
+st.sidebar.write(f"👤 {st.session_state.username}")
+
+# 🚪 logout button
+if st.sidebar.button("Logout"):
+    st.session_state.logged_in = False
+    st.session_state.username = ""
+    st.rerun()
 
 # ================= ADD HABIT =================
 if menu == "Add Habit":
